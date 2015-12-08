@@ -212,8 +212,14 @@
 	// to be overriden by subclasses
 	// make sure super implementation is called
 	
-	if( [[self getAttribute:@"id"] length] > 0 )
+    if( [[self getAttribute:@"id"] length] > 0 )
+    {
 		self.identifier = [self getAttribute:@"id"];
+    }
+    else
+    {
+        self.identifier = [[NSUUID UUID] UUIDString];
+    }
 	
 	/** CSS styles and classes */
 	if ( [self getAttributeNode:@"style"] )
