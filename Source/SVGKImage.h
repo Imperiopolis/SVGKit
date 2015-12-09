@@ -48,6 +48,8 @@
 
 @class SVGDefsElement;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SVGKImage; // needed for typedef below
 typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVGKParseResult* parseResult );
 
@@ -62,16 +64,16 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
  
  NB you can get MUCH BETTER performance using the methods such as exportUIImageAntiAliased and exportNSDataAntiAliased
  */
-@property (nonatomic, readonly) UIImage* UIImage;
+@property (nullable, nonatomic, readonly) UIImage* UIImage;
 
-@property (nonatomic, retain, readonly) SVGKSource* source;
-@property (nonatomic, retain, readonly) SVGKParseResult* parseErrorsAndWarnings;
+@property (nullable, nonatomic, retain, readonly) SVGKSource* source;
+@property (nullable, nonatomic, retain, readonly) SVGKParseResult* parseErrorsAndWarnings;
 
-@property (nonatomic, retain, readonly) SVGDocument* DOMDocument;
-@property (nonatomic, retain, readonly) SVGSVGElement* DOMTree; // needs renaming + (possibly) replacing by DOMDocument
-@property (nonatomic, retain, readonly) CALayer* CALayerTree;
+@property (nullable, nonatomic, retain, readonly) SVGDocument* DOMDocument;
+@property (nullable, nonatomic, retain, readonly) SVGSVGElement* DOMTree; // needs renaming + (possibly) replacing by DOMDocument
+@property (nullable, nonatomic, retain, readonly) CALayer* CALayerTree;
 #if ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
-@property (nonatomic, retain, readonly) NSString* nameUsedToInstantiate;
+@property (nullable, nonatomic, retain, readonly) NSString* nameUsedToInstantiate;
 #endif
 
 #pragma mark - methods to quick load an SVG as an image
@@ -88,8 +90,8 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
  - If that's missing, it finds the same file in the App's Bundle (i.e. the files stored at compile-time by Xcode, and shipped as the app)
  - Creates an SVGKSource so that you can later inspect exactly where it found the file
  */
-+ (SVGKImage *)imageNamed:(NSString *)name;
-+ (SVGKImage *)imageNamed:(NSString *)name inBundle:(NSBundle *)bundle;
++ (nullable SVGKImage *)imageNamed:(NSString *)name;
++ (nullable SVGKImage *)imageNamed:(NSString *)name inBundle:(NSBundle *)bundle;
 /**
  Almost identical to imageNamed: except that it performs the parse in a separate thread.
  
@@ -98,8 +100,8 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
  UNLESS the image was already loaded, and a cached version can be returned - in which case,
  returns nil and immmediately calls the completion block
  */
-+(SVGKParser *) imageAsynchronouslyNamed:(NSString *)name onCompletion:(SVGKImageAsynchronousLoadingDelegate) blockCompleted;
-+ (SVGKImage *)imageWithContentsOfFile:(NSString *)path;
++(nullable SVGKParser *) imageAsynchronouslyNamed:(NSString *)name onCompletion:(SVGKImageAsynchronousLoadingDelegate) blockCompleted;
++ (nullable SVGKImage *)imageWithContentsOfFile:(NSString *)path;
 
 /**
  PREFERABLY: these are our only method, apart from the convenience "imageNamed"
@@ -112,15 +114,15 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
  This is because SVG's cannot parse correctly without the metadata about where
  the file came from: e.g. they cannot process relative links, cross-references, etc.
  */
-+(SVGKImage*) imageWithSource:(SVGKSource *)newSource; // if you have custom source's you want to use
++(nullable SVGKImage*) imageWithSource:(SVGKSource *)newSource; // if you have custom source's you want to use
 
 /**
  This is the asynchronous version of imageWithSource:
  */
-+(SVGKParser *) imageWithSource:(SVGKSource *)source onCompletion:(SVGKImageAsynchronousLoadingDelegate)blockCompleted;
++(nullable SVGKParser *) imageWithSource:(SVGKSource *)source onCompletion:(SVGKImageAsynchronousLoadingDelegate)blockCompleted;
 
-- (id)initWithContentsOfFile:(NSString *)path;
-- (id)initWithData:(NSData *)data;
+- (nullable id)initWithContentsOfFile:(NSString *)path;
+- (nullable id)initWithData:(NSData *)data;
 
 #pragma mark - UIImage methods cloned and re-implemented as SVG intelligent methods
 
@@ -198,9 +200,9 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
 
 // animated images. When set as UIImageView.image, animation will play in an infinite loop until removed. Drawing will render the first image
 #if TARGET_OS_IPHONE
-+ (UIImage *)animatedImageNamed:(NSString *)name duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0); read sequnce of files with suffix starting at 0 or 1
-+ (UIImage *)animatedResizableImageNamed:(NSString *)name capInsets:(UIEdgeInsets)capInsets duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0); // squence of files
-+ (UIImage *)animatedImageWithImages:(NSArray *)images duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0);
++ (nullable UIImage *)animatedImageNamed:(NSString *)name duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0); read sequnce of files with suffix starting at 0 or 1
++ (nullable UIImage *)animatedResizableImageNamed:(NSString *)name capInsets:(UIEdgeInsets)capInsets duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0); // squence of files
++ (nullable UIImage *)animatedImageWithImages:(NSArray *)images duration:(NSTimeInterval)duration ;//__OSX_AVAILABLE_STARTING(__MAC_NA,__IPHONE_5_0);
 #endif
 /**
  
@@ -211,12 +213,12 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
  */
 #pragma mark ---------end of unsupported items
 
-+ (SVGKImage*)imageWithContentsOfURL:(NSURL *)url;
++ (nullable SVGKImage*)imageWithContentsOfURL:(NSURL *)url;
 
 #pragma mark - core methods for interacting with an SVG image usefully (not from UIImage)
 
 /*! If you want to provide a custom SVGKSource */
-- (id)initWithSource:(SVGKSource *)source;
+- (nullable id)initWithSource:(SVGKSource *)source;
 
 /*! If you already have a parsed SVG, and just want to upgrade it to an SVGKImage
  
@@ -225,7 +227,7 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
  NB: this is frequently used if you have to add custom SVGKParserExtensions to parse an
  SVG which contains custom tags
  */
-- (id)initWithParsedSVG:(SVGKParseResult *)parseResult fromSource:(SVGKSource*) parseSource;
+- (nullable id)initWithParsedSVG:(SVGKParseResult *)parseResult fromSource:(SVGKSource*) parseSource;
 
 
 /*! Creates a new instance each time you call it. This should ONLY be used if you specifically need to duplicate
@@ -243,7 +245,7 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
  i.e. this takes advantage of the cached CALayerTree instance, and also correctly uses the SVG.viewBox info
  that was used when generating the original CALayerTree
  */
-- (CALayer *)layerWithIdentifier:(NSString *)identifier;
+- (nullable CALayer *)layerWithIdentifier:(NSString *)identifier;
 
 /*! uses the current .CALayerTree property to find the layer, recursing down the tree (or creates a new
  CALayerTree on demand, and caches it)
@@ -251,7 +253,7 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
  i.e. this takes advantage of the cached CALayerTree instance, and also correctly uses the SVG.viewBox info
  that was used when generating the original CALayerTree
  */
-- (CALayer *)layerWithIdentifier:(NSString *)identifier layer:(CALayer *)layer;
+- (nullable CALayer *)layerWithIdentifier:(NSString *)identifier layer:(CALayer *)layer;
 
 /*! As for layerWithIdentifier: but works out the absolute position of the layer,
  effectively pulling it out of the layer-tree (the newly created layer has NO SUPERLAYER,
@@ -296,3 +298,5 @@ typedef void (^SVGKImageAsynchronousLoadingDelegate)(SVGKImage* loadedImage, SVG
 -(void) scaleToFitInside:(CGSize) maxSize;
 
 @end
+
+NS_ASSUME_NONNULL_END
