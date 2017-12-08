@@ -28,11 +28,4 @@
 -(void) addParseErrorFatal:(NSError*) fatalError;
 -(void) addSAXError:(NSError*) saxError;
 
-#if ENABLE_PARSER_EXTENSIONS_CUSTOM_DATA
-/*! Each SVGKParserExtension can optionally save extra data here */
-@property(nonatomic,retain) NSMutableDictionary* extensionsData;
-
--(NSMutableDictionary*) dictionaryForParserExtension:(NSObject<SVGKParserExtension>*) extension;
-#endif
-
 @end
